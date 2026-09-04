@@ -28,5 +28,9 @@
     "lit": "^3.3.2",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gang-of-Beads/pi-web-themes.git"
   }
 }
