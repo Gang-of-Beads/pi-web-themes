@@ -1,10 +1,32 @@
 {
-  "name": "@pi-web/themes-plugin",
-  "private": true,
+  "name": "@gang-of-beads/pi-web-themes",
+  "version": "0.1.0-alpha.1",
+  "description": "Theme pack plugin for PI WEB: theme token packs contributed through the plugin contract.",
+  "license": "MIT",
   "type": "module",
+  "files": [
+    "pi-web-plugin.js"
+  ],
   "piWeb": {
     "plugins": [
-      { "id": "themes", "browserRoot": ".", "module": "pi-web-plugin.js" }
+      {
+        "id": "themes",
+        "browserRoot": ".",
+        "module": "pi-web-plugin.js",
+        "title": "Themes"
+      }
     ]
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "vitest run",
+    "prepack": "node build.mjs"
+  },
+  "devDependencies": {
+    "@gang-of-beads/pi-web": "^1.202609.18",
+    "esbuild": "^0.27.0",
+    "lit": "^3.3.2",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   }
 }
