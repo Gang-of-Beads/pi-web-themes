@@ -330,6 +330,47 @@ const clayPaperTokens = {
   "--pi-terminal-selection": "#5a4a3e",
 } satisfies ThemeTokens;
 
+/**
+ * The semantic surface ladder, derived from a palette's own trio so every
+ * theme lands on the same structural steps without hand-picking five more
+ * values each: the card sits one visible step toward the text color, the
+ * raised layer two, and the pressed state deepens the hover stop. A theme can
+ * still pin any stop by setting it after the spread.
+ */
+type SurfaceLadder = {
+  "--pi-surface-canvas": string;
+  "--pi-surface-panel": string;
+  "--pi-surface-card": string;
+  "--pi-surface-raised": string;
+  "--pi-surface-active": string;
+};
+
+function mixSrgb(a: string, b: string, t: number): string {
+  const parse = (hex: string): [number, number, number] => {
+    const value = hex.replace("#", "");
+    return [Number.parseInt(value.slice(0, 2), 16), Number.parseInt(value.slice(2, 4), 16), Number.parseInt(value.slice(4, 6), 16)];
+  };
+  const [red1, green1, blue1] = parse(a);
+  const [red2, green2, blue2] = parse(b);
+  const channel = (x: number, y: number) => Math.round(x * (1 - t) + y * t);
+  const hex = (n: number) => n.toString(16).padStart(2, "0");
+  return `#${hex(channel(red1, red2))}${hex(channel(green1, green2))}${hex(channel(blue1, blue2))}`;
+}
+
+function surfaceLadder(tokens: Pick<ThemeTokens, "--pi-bg" | "--pi-surface" | "--pi-surface-hover" | "--pi-text">): SurfaceLadder {
+  return {
+    "--pi-surface-canvas": tokens["--pi-bg"],
+    "--pi-surface-panel": tokens["--pi-surface"],
+    "--pi-surface-card": mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.08),
+    "--pi-surface-raised": mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.16),
+    "--pi-surface-active": mixSrgb(tokens["--pi-surface-hover"], tokens["--pi-text"], 0.18),
+  };
+}
+
+function withSurfaceLadder(tokens: ThemeTokens): ThemeTokens & SurfaceLadder {
+  return { ...tokens, ...surfaceLadder(tokens) };
+}
+
 const themePackPlugin: PiWebPlugin = {
   apiVersion: 2,
   name: "PI WEB Themes",
@@ -342,7 +383,7 @@ const themePackPlugin: PiWebPlugin = {
           description: "Dark PI WEB palette.",
           order: 10,
           colorScheme: "dark",
-          tokens: piWebDarkTokens,
+          tokens: withSurfaceLadder(piWebDarkTokens),
         },
         {
           id: "pi-web-light",
@@ -350,7 +391,7 @@ const themePackPlugin: PiWebPlugin = {
           description: "Light PI WEB palette.",
           order: 20,
           colorScheme: "light",
-          tokens: piWebLightTokens,
+          tokens: withSurfaceLadder(piWebLightTokens),
         },
         {
           id: "classic",
@@ -358,7 +399,7 @@ const themePackPlugin: PiWebPlugin = {
           description: "The original PI WEB dark palette.",
           order: 30,
           colorScheme: "dark",
-          tokens: classicTokens,
+          tokens: withSurfaceLadder(classicTokens),
         },
         {
           id: "high-contrast",
@@ -366,7 +407,7 @@ const themePackPlugin: PiWebPlugin = {
           description: "Near-black behind near-white, for bright rooms and tired eyes.",
           order: 40,
           colorScheme: "dark",
-          tokens: highContrastTokens,
+          tokens: withSurfaceLadder(highContrastTokens),
         },
         {
           id: "night",
@@ -374,7 +415,7 @@ const themePackPlugin: PiWebPlugin = {
           description: "Warm and dim, with an amber accent instead of blue light.",
           order: 50,
           colorScheme: "dark",
-          tokens: nightTokens,
+          tokens: withSurfaceLadder(nightTokens),
         },
         {
           id: "paper",
@@ -382,7 +423,7 @@ const themePackPlugin: PiWebPlugin = {
           description: "Untinted ink on paper, for daylight and for screenshots.",
           order: 60,
           colorScheme: "light",
-          tokens: paperTokens,
+          tokens: withSurfaceLadder(paperTokens),
         },
         {
           id: "clay-soft",
@@ -390,7 +431,7 @@ const themePackPlugin: PiWebPlugin = {
           description: "Warm ink and clay, after Anthropic's published palette.",
           order: 70,
           colorScheme: "dark",
-          tokens: claySoftTokens,
+          tokens: withSurfaceLadder(claySoftTokens),
         },
         {
           id: "clay-paper",
@@ -398,7 +439,7 @@ const themePackPlugin: PiWebPlugin = {
           description: "The same clay palette on its warm paper canvas.",
           order: 80,
           colorScheme: "light",
-          tokens: clayPaperTokens,
+          tokens: withSurfaceLadder(clayPaperTokens),
         },
       ],
       themePairs: [

@@ -85,4 +85,31 @@ describe("theme text contrast", () => {
       }
     }
   }
+
+  it("gives every theme a real surface ladder, not a flat one", () => {
+    for (const theme of themes) {
+      const tokens: Record<string, string> = { ...theme.tokens };
+      const canvas = luminance(tokens["--pi-surface-canvas"]);
+      const panel = luminance(tokens["--pi-surface-panel"]);
+      const card = luminance(tokens["--pi-surface-card"]);
+      const raised = luminance(tokens["--pi-surface-raised"]);
+      expect(panel, `${theme.id} frames its content off the canvas`).not.toBe(canvas);
+      const cardStep = card - panel;
+      const raisedStep = raised - card;
+      expect(cardStep, `${theme.id} card steps off the panel`).not.toBe(0);
+      expect(Math.sign(raisedStep), `${theme.id} raised continues the card's direction`).toBe(Math.sign(cardStep));
+    }
+  });
+
+  it("keeps body text readable on the card and raised stops (policed pair)", () => {
+    for (const theme of themes) {
+      if (!POLICED_THEME_IDS.has(theme.id)) continue;
+      for (const stop of ["--pi-surface-card", "--pi-surface-raised"]) {
+        const colour = theme.tokens["--pi-text"];
+        const surface = theme.tokens[stop];
+        if (!isOpaqueHex(colour) || !isOpaqueHex(surface)) continue;
+        expect(contrast(colour, surface), `${theme.id} text on ${stop}`).toBeGreaterThanOrEqual(AA_BODY);
+      }
+    }
+  });
 });

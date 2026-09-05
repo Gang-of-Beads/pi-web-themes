@@ -295,6 +295,29 @@ var clayPaperTokens = {
   "--pi-success-bg-overlay": "#eef2e6ee",
   "--pi-terminal-selection": "#5a4a3e"
 };
+function mixSrgb(a, b, t) {
+  const parse = (hex2) => {
+    const value = hex2.replace("#", "");
+    return [Number.parseInt(value.slice(0, 2), 16), Number.parseInt(value.slice(2, 4), 16), Number.parseInt(value.slice(4, 6), 16)];
+  };
+  const [red1, green1, blue1] = parse(a);
+  const [red2, green2, blue2] = parse(b);
+  const channel = (x, y) => Math.round(x * (1 - t) + y * t);
+  const hex = (n) => n.toString(16).padStart(2, "0");
+  return `#${hex(channel(red1, red2))}${hex(channel(green1, green2))}${hex(channel(blue1, blue2))}`;
+}
+function surfaceLadder(tokens) {
+  return {
+    "--pi-surface-canvas": tokens["--pi-bg"],
+    "--pi-surface-panel": tokens["--pi-surface"],
+    "--pi-surface-card": mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.08),
+    "--pi-surface-raised": mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.16),
+    "--pi-surface-active": mixSrgb(tokens["--pi-surface-hover"], tokens["--pi-text"], 0.18)
+  };
+}
+function withSurfaceLadder(tokens) {
+  return { ...tokens, ...surfaceLadder(tokens) };
+}
 var themePackPlugin = {
   apiVersion: 2,
   name: "PI WEB Themes",
@@ -307,7 +330,7 @@ var themePackPlugin = {
           description: "Dark PI WEB palette.",
           order: 10,
           colorScheme: "dark",
-          tokens: piWebDarkTokens
+          tokens: withSurfaceLadder(piWebDarkTokens)
         },
         {
           id: "pi-web-light",
@@ -315,7 +338,7 @@ var themePackPlugin = {
           description: "Light PI WEB palette.",
           order: 20,
           colorScheme: "light",
-          tokens: piWebLightTokens
+          tokens: withSurfaceLadder(piWebLightTokens)
         },
         {
           id: "classic",
@@ -323,7 +346,7 @@ var themePackPlugin = {
           description: "The original PI WEB dark palette.",
           order: 30,
           colorScheme: "dark",
-          tokens: classicTokens
+          tokens: withSurfaceLadder(classicTokens)
         },
         {
           id: "high-contrast",
@@ -331,7 +354,7 @@ var themePackPlugin = {
           description: "Near-black behind near-white, for bright rooms and tired eyes.",
           order: 40,
           colorScheme: "dark",
-          tokens: highContrastTokens
+          tokens: withSurfaceLadder(highContrastTokens)
         },
         {
           id: "night",
@@ -339,7 +362,7 @@ var themePackPlugin = {
           description: "Warm and dim, with an amber accent instead of blue light.",
           order: 50,
           colorScheme: "dark",
-          tokens: nightTokens
+          tokens: withSurfaceLadder(nightTokens)
         },
         {
           id: "paper",
@@ -347,7 +370,7 @@ var themePackPlugin = {
           description: "Untinted ink on paper, for daylight and for screenshots.",
           order: 60,
           colorScheme: "light",
-          tokens: paperTokens
+          tokens: withSurfaceLadder(paperTokens)
         },
         {
           id: "clay-soft",
@@ -355,7 +378,7 @@ var themePackPlugin = {
           description: "Warm ink and clay, after Anthropic's published palette.",
           order: 70,
           colorScheme: "dark",
-          tokens: claySoftTokens
+          tokens: withSurfaceLadder(claySoftTokens)
         },
         {
           id: "clay-paper",
@@ -363,7 +386,7 @@ var themePackPlugin = {
           description: "The same clay palette on its warm paper canvas.",
           order: 80,
           colorScheme: "light",
-          tokens: clayPaperTokens
+          tokens: withSurfaceLadder(clayPaperTokens)
         }
       ],
       themePairs: [
