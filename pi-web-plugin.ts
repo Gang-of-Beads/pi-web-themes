@@ -334,8 +334,9 @@ const clayPaperTokens = {
  * The semantic surface ladder, derived from a palette's own trio so every
  * theme lands on the same structural steps without hand-picking five more
  * values each: the card sits one visible step toward the text color, the
- * raised layer two, and the pressed state deepens the hover stop. A theme can
- * still pin any stop by setting it after the spread.
+ * raised layer two, and the pressed state deepens the hover stop. A stop the
+ * palette already pins wins over the derivation; the key set is owned by the
+ * host's SemanticSurfaceToken - keep the two in step.
  */
 type SurfaceLadder = {
   "--pi-surface-canvas": string;
@@ -346,24 +347,27 @@ type SurfaceLadder = {
 };
 
 function mixSrgb(a: string, b: string, t: number): string {
-  const parse = (hex: string): [number, number, number] => {
-    const value = hex.replace("#", "");
+  const parse = (hex: string): [number, number, number] | undefined => {
+    if (!/^#[\da-f]{6}$/iu.test(hex)) return undefined;
+    const value = hex.slice(1);
     return [Number.parseInt(value.slice(0, 2), 16), Number.parseInt(value.slice(2, 4), 16), Number.parseInt(value.slice(4, 6), 16)];
   };
-  const [red1, green1, blue1] = parse(a);
-  const [red2, green2, blue2] = parse(b);
+  const from = parse(a);
+  const toward = parse(b);
+  if (from === undefined || toward === undefined) return a;
   const channel = (x: number, y: number) => Math.round(x * (1 - t) + y * t);
   const hex = (n: number) => n.toString(16).padStart(2, "0");
-  return `#${hex(channel(red1, red2))}${hex(channel(green1, green2))}${hex(channel(blue1, blue2))}`;
+  return `#${hex(channel(from[0], toward[0]))}${hex(channel(from[1], toward[1]))}${hex(channel(from[2], toward[2]))}`;
 }
 
 function surfaceLadder(tokens: Pick<ThemeTokens, "--pi-bg" | "--pi-surface" | "--pi-surface-hover" | "--pi-text">): SurfaceLadder {
+  const derived = (stop: keyof SurfaceLadder, fallback: string): string => (tokens[stop] !== undefined ? (tokens[stop] as string) : fallback);
   return {
-    "--pi-surface-canvas": tokens["--pi-bg"],
-    "--pi-surface-panel": tokens["--pi-surface"],
-    "--pi-surface-card": mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.08),
-    "--pi-surface-raised": mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.16),
-    "--pi-surface-active": mixSrgb(tokens["--pi-surface-hover"], tokens["--pi-text"], 0.18),
+    "--pi-surface-canvas": derived("--pi-surface-canvas", tokens["--pi-bg"]),
+    "--pi-surface-panel": derived("--pi-surface-panel", tokens["--pi-surface"]),
+    "--pi-surface-card": derived("--pi-surface-card", mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.08)),
+    "--pi-surface-raised": derived("--pi-surface-raised", mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.16)),
+    "--pi-surface-active": derived("--pi-surface-active", mixSrgb(tokens["--pi-surface-hover"], tokens["--pi-text"], 0.18)),
   };
 }
 

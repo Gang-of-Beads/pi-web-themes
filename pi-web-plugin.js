@@ -297,22 +297,25 @@ var clayPaperTokens = {
 };
 function mixSrgb(a, b, t) {
   const parse = (hex2) => {
-    const value = hex2.replace("#", "");
+    if (!/^#[\da-f]{6}$/iu.test(hex2)) return void 0;
+    const value = hex2.slice(1);
     return [Number.parseInt(value.slice(0, 2), 16), Number.parseInt(value.slice(2, 4), 16), Number.parseInt(value.slice(4, 6), 16)];
   };
-  const [red1, green1, blue1] = parse(a);
-  const [red2, green2, blue2] = parse(b);
+  const from = parse(a);
+  const toward = parse(b);
+  if (from === void 0 || toward === void 0) return a;
   const channel = (x, y) => Math.round(x * (1 - t) + y * t);
   const hex = (n) => n.toString(16).padStart(2, "0");
-  return `#${hex(channel(red1, red2))}${hex(channel(green1, green2))}${hex(channel(blue1, blue2))}`;
+  return `#${hex(channel(from[0], toward[0]))}${hex(channel(from[1], toward[1]))}${hex(channel(from[2], toward[2]))}`;
 }
 function surfaceLadder(tokens) {
+  const derived = (stop, fallback) => tokens[stop] !== void 0 ? tokens[stop] : fallback;
   return {
-    "--pi-surface-canvas": tokens["--pi-bg"],
-    "--pi-surface-panel": tokens["--pi-surface"],
-    "--pi-surface-card": mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.08),
-    "--pi-surface-raised": mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.16),
-    "--pi-surface-active": mixSrgb(tokens["--pi-surface-hover"], tokens["--pi-text"], 0.18)
+    "--pi-surface-canvas": derived("--pi-surface-canvas", tokens["--pi-bg"]),
+    "--pi-surface-panel": derived("--pi-surface-panel", tokens["--pi-surface"]),
+    "--pi-surface-card": derived("--pi-surface-card", mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.08)),
+    "--pi-surface-raised": derived("--pi-surface-raised", mixSrgb(tokens["--pi-surface"], tokens["--pi-text"], 0.16)),
+    "--pi-surface-active": derived("--pi-surface-active", mixSrgb(tokens["--pi-surface-hover"], tokens["--pi-text"], 0.18))
   };
 }
 function withSurfaceLadder(tokens) {
