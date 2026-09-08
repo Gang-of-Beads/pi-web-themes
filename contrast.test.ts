@@ -86,6 +86,18 @@ describe("theme text contrast", () => {
     }
   }
 
+  it("gives every theme a label that survives its own accent fill", () => {
+    for (const theme of themes) {
+      const tokens: Record<string, string> = { ...theme.tokens };
+      const accent = tokens["--pi-accent"] ?? "";
+      const onAccent = tokens["--pi-on-accent"] ?? "";
+      if (!isOpaqueHex(accent)) continue;
+
+      expect(isOpaqueHex(onAccent), `${theme.id} must name --pi-on-accent`).toBe(true);
+      expect(contrast(onAccent, accent), `${theme.id} accent fill`).toBeGreaterThanOrEqual(AA_BODY);
+    }
+  });
+
   it("gives every theme a real surface ladder, not a flat one", () => {
     for (const theme of themes) {
       const tokens: Record<string, string> = { ...theme.tokens };
