@@ -379,8 +379,25 @@ function surfaceLadder(tokens: Pick<ThemeTokens, "--pi-bg" | "--pi-surface" | "-
   };
 }
 
+/**
+ * The shape every pack theme was designed against. The core's own look went
+ * flat mono TUI (square radii, monospace face, no elevation), so a theme
+ * that ships without these stops would render its soft palette on the pro
+ * skeleton - half of another theme, which is worse than not shipping.
+ */
+const softShape = {
+  "--pi-font-ui": 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  "--pi-font-display": '"SF Pro Display", "Segoe UI Variable Display", Inter, "Helvetica Neue", ui-sans-serif, system-ui, sans-serif',
+  "--pi-font-mono": 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+  "--pi-radius-xs": "4px",
+  "--pi-radius-sm": "6px",
+  "--pi-radius-md": "8px",
+  "--pi-radius-lg": "12px",
+  "--pi-radius-xl": "16px",
+} satisfies Partial<ThemeTokens>;
+
 function withSurfaceLadder(tokens: ThemeTokens): ThemeTokens & SurfaceLadder {
-  return { ...tokens, ...surfaceLadder(tokens) };
+  return { ...tokens, ...softShape, ...surfaceLadder(tokens) };
 }
 
 const themePackPlugin: PiWebPlugin = {
