@@ -400,6 +400,103 @@ function withSurfaceLadder(tokens: ThemeTokens): ThemeTokens & SurfaceLadder {
   return { ...tokens, ...softShape, ...surfaceLadder(tokens) };
 }
 
+
+/**
+ * Material pair: an M3-flavored palette with its own shape - the Roboto-ish
+ * sans stack and the M3 radius ladder (4/8/12/16/20), not the pack's soft
+ * shape. Material carries its elevation in tonal surfaces, so the shadow
+ * colours stay near-transparent and surfaces do the layering.
+ */
+const materialShape = {
+  "--pi-font-ui": 'Roboto, "Segoe UI", system-ui, -apple-system, sans-serif',
+  "--pi-font-display": 'Roboto, "Google Sans", "Segoe UI", system-ui, sans-serif',
+  "--pi-font-mono": '"Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+  "--pi-radius-xs": "4px",
+  "--pi-radius-sm": "8px",
+  "--pi-radius-md": "12px",
+  "--pi-radius-lg": "16px",
+  "--pi-radius-xl": "20px",
+} satisfies Partial<ThemeTokens>;
+
+const materialDarkTokens = {
+  "--pi-bg": "#141218",
+  "--pi-surface": "#1d1b20",
+  "--pi-surface-hover": "#262329",
+  "--pi-terminal-bg": "#111014",
+  "--pi-terminal-text": "#e6e0e9",
+  "--pi-border": "#48454e",
+  "--pi-border-muted": "#36343b",
+  "--pi-text": "#e6e0e9",
+  "--pi-text-secondary": "#cac4d0",
+  "--pi-text-bright": "#f5eef7",
+  "--pi-muted": "#938f99",
+  "--pi-dim": "#79747e",
+  "--pi-accent": "#d0bcff",
+  "--pi-on-accent": "#381e72",
+  "--pi-accent-border": "#65558f",
+  "--pi-selection-bg": "#4a4458",
+  "--pi-success": "#8bd4a0",
+  "--pi-success-border": "#3f6b4f",
+  "--pi-success-bg": "#15291d",
+  "--pi-success-surface": "#1b3524",
+  "--pi-success-ring": "#8bd4a055",
+  "--pi-warning": "#ffb871",
+  "--pi-warning-border": "#7a5622",
+  "--pi-warning-surface": "#2b2113",
+  "--pi-danger": "#f2b8b5",
+  "--pi-purple": "#e8def8",
+  "--pi-purple-border": "#b69df8",
+  "--pi-purple-surface": "#2b2135",
+  "--pi-overlay": "#0008",
+  "--pi-shadow-soft": "#0000",
+  "--pi-shadow": "#0000",
+  "--pi-shadow-strong": "#0000",
+  "--pi-bg-overlay-soft": "#141218dd",
+  "--pi-bg-overlay": "#141218e6",
+  "--pi-success-bg-overlay": "#15291dee",
+  "--pi-terminal-selection": "#4a4458",
+} satisfies ThemeTokens;
+
+const materialLightTokens = {
+  "--pi-bg": "#fdf7ff",
+  "--pi-surface": "#f3edf7",
+  "--pi-surface-hover": "#e8e0eb",
+  "--pi-terminal-bg": "#141218",
+  "--pi-terminal-text": "#e6e0e9",
+  "--pi-border": "#cac4d0",
+  "--pi-border-muted": "#e0dbe8",
+  "--pi-text": "#1d1b20",
+  "--pi-text-secondary": "#49454f",
+  "--pi-text-bright": "#111014",
+  "--pi-muted": "#6f6b76",
+  "--pi-dim": "#938f99",
+  "--pi-accent": "#6750a4",
+  "--pi-on-accent": "#ffffff",
+  "--pi-accent-border": "#6750a4",
+  "--pi-selection-bg": "#e8def8",
+  "--pi-success": "#1e6b3a",
+  "--pi-success-border": "#a5d2b0",
+  "--pi-success-bg": "#e7f4ea",
+  "--pi-success-surface": "#dcefe0",
+  "--pi-success-ring": "#1e6b3a55",
+  "--pi-warning": "#8a5300",
+  "--pi-warning-border": "#e8c19a",
+  "--pi-warning-surface": "#f7ecdd",
+  "--pi-danger": "#b3261e",
+  "--pi-purple": "#6750a4",
+  "--pi-purple-border": "#d0bcff",
+  "--pi-purple-surface": "#ece2f8",
+  "--pi-overlay": "#0008",
+  "--pi-shadow-soft": "#0000",
+  "--pi-shadow": "#0000",
+  "--pi-shadow-strong": "#0000",
+  "--pi-bg-overlay-soft": "#fdf7ffdd",
+  "--pi-bg-overlay": "#fdf7ffe6",
+  "--pi-success-bg-overlay": "#e7f4eaee",
+  "--pi-terminal-selection": "#d0bcff",
+} satisfies ThemeTokens;
+
+
 const themePackPlugin: PiWebPlugin = {
   apiVersion: 2,
   name: "PI WEB Themes",
@@ -470,6 +567,22 @@ const themePackPlugin: PiWebPlugin = {
           colorScheme: "light",
           tokens: withSurfaceLadder(clayPaperTokens),
         },
+        {
+          id: "material-dark",
+          name: "Material Dark",
+          description: "M3-flavoured dark: tonal surfaces carry the layers.",
+          order: 90,
+          colorScheme: "dark",
+          tokens: { ...materialShape, ...withSurfaceLadder(materialDarkTokens) },
+        },
+        {
+          id: "material-light",
+          name: "Material Light",
+          description: "M3-flavoured light on the porcelain canvas.",
+          order: 100,
+          colorScheme: "light",
+          tokens: { ...materialShape, ...withSurfaceLadder(materialLightTokens) },
+        },
       ],
       themePairs: [
         {
@@ -487,6 +600,14 @@ const themePackPlugin: PiWebPlugin = {
           order: 20,
           light: "clay-paper",
           dark: "clay-soft",
+        },
+        {
+          id: "material",
+          name: "Material",
+          description: "Follow the system light/dark preference with the Material palette.",
+          order: 30,
+          light: "material-light",
+          dark: "material-dark",
         },
       ],
     },
