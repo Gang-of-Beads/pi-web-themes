@@ -20,10 +20,12 @@
   "scripts": {
     "build": "node build.mjs",
     "test": "vitest run",
-    "prepack": "node build.mjs"
+    "prepack": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test && npm run build && git diff --exit-code -- pi-web-plugin.js"
   },
   "devDependencies": {
-    "@gang-of-beads/pi-web": "^1.202609.18",
+    "@gang-of-beads/pi-web-plugin-api": "^0.1.0-alpha.2",
     "esbuild": "^0.27.0",
     "lit": "^3.3.2",
     "typescript": "^5.9.3",

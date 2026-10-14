@@ -21,6 +21,8 @@ describe("the bundled theme pack", () => {
       { id: "paper", colorScheme: "light" },
       { id: "clay-soft", colorScheme: "dark" },
       { id: "clay-paper", colorScheme: "light" },
+      { id: "material-dark", colorScheme: "dark" },
+      { id: "material-light", colorScheme: "light" },
     ]);
   });
 
@@ -28,6 +30,7 @@ describe("the bundled theme pack", () => {
     expect((contributions.themePairs ?? []).map((pair) => ({ id: pair.id, light: pair.light, dark: pair.dark }))).toEqual([
       { id: "pi-web", light: "pi-web-light", dark: "pi-web-dark" },
       { id: "clay", light: "clay-paper", dark: "clay-soft" },
+      { id: "material", light: "material-light", dark: "material-dark" },
     ]);
   });
 });

@@ -1,4 +1,4 @@
-import type { PiWebPlugin, ThemeTokens } from "@gang-of-beads/pi-web/plugin-api";
+import type { PiWebPlugin, ThemeTokens } from "@gang-of-beads/pi-web-plugin-api/plugin-api";
 
 const classicTokens = {
   "--pi-bg": "#0d1117",
@@ -368,7 +368,7 @@ function mixSrgb(a: string, b: string, t: number): string {
   return `#${hex(channel(from[0], toward[0]))}${hex(channel(from[1], toward[1]))}${hex(channel(from[2], toward[2]))}`;
 }
 
-function surfaceLadder(tokens: Pick<ThemeTokens, "--pi-bg" | "--pi-surface" | "--pi-surface-hover" | "--pi-text">): SurfaceLadder {
+function surfaceLadder(tokens: Pick<ThemeTokens, "--pi-bg" | "--pi-surface" | "--pi-surface-hover" | "--pi-text" | keyof SurfaceLadder>): SurfaceLadder {
   const derived = (stop: keyof SurfaceLadder, fallback: string): string => (tokens[stop] !== undefined ? (tokens[stop] as string) : fallback);
   return {
     "--pi-surface-canvas": derived("--pi-surface-canvas", tokens["--pi-bg"]),

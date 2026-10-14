@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { html, svg } from "lit";
-import type { PluginId } from "@gang-of-beads/pi-web/plugin-api";
+import type { PluginId } from "@gang-of-beads/pi-web-plugin-api/plugin-api";
 import themePackPlugin from "./pi-web-plugin.js";
 
 /**
@@ -44,8 +44,8 @@ function contrast(a: string, b: string): number {
 }
 
 /** Opaque six-digit values only: the overlays carry alpha and are not text. */
-function isOpaqueHex(value: string): boolean {
-  return /^#[0-9a-f]{6}$/iu.test(value);
+function isOpaqueHex(value: string | undefined): value is string {
+  return value !== undefined && /^#[0-9a-f]{6}$/iu.test(value);
 }
 
 const TEXT_TOKENS = ["--pi-text", "--pi-text-secondary", "--pi-muted", "--pi-dim", "--pi-accent", "--pi-success", "--pi-warning", "--pi-danger", "--pi-purple"] as const;
@@ -116,7 +116,7 @@ describe("theme text contrast", () => {
   it("keeps body text readable on the card and raised stops (policed pair)", () => {
     for (const theme of themes) {
       if (!POLICED_THEME_IDS.has(theme.id)) continue;
-      for (const stop of ["--pi-surface-card", "--pi-surface-raised"]) {
+      for (const stop of ["--pi-surface-card", "--pi-surface-raised"] as const) {
         const colour = theme.tokens["--pi-text"];
         const surface = theme.tokens[stop];
         if (!isOpaqueHex(colour) || !isOpaqueHex(surface)) continue;
