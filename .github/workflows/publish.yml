@@ -1,3 +1,13 @@
+# Tag-driven release: push a v<version> tag that matches package.json and this
+# workflow checks the package, publishes it to npm, and creates the GitHub
+# Release with that version's CHANGELOG section.
+#
+# Two publishing routes. While the NPM_TOKEN secret exists (a stage-only token,
+# used for the first release of a package, which trusted publishing cannot do)
+# the version is staged: it waits on npmjs.com until a maintainer approves it
+# with 2FA. Without the secret it publishes through trusted publishing (OIDC),
+# configured on npmjs.com for this repository and this file name, with
+# provenance. Keep the file name stable: the trusted publisher is bound to it.
 name: Release (tag push)
 
 on:
@@ -11,7 +21,7 @@ permissions:
 
 jobs:
   release:
-    name: GitHub Release + npm publish
+    name: npm publish + GitHub Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,42 +34,29 @@ jobs:
           registry-url: https://registry.npmjs.org
           cache: npm
 
+      # Staged publishing and trusted publishing need a newer npm than Node ships.
+      - name: Update npm
+        run: npm install -g npm@^11.15.0
+
       - name: Install dependencies
         run: npm ci
 
-      - name: Test
-        run: npm test
+      # Type-check, test and build; it fails when the committed pi-web-plugin.js is stale,
+      # which a git install would otherwise ship silently.
+      - name: Check
+        run: npm run check
 
-      - name: Build
-        run: npm run build
-
-      # A git package install runs no build, so a stale committed bundle would
-      # ship silently. The build above must leave the tree clean.
-      - name: Commit bundle is fresh
-        run: |
-          git diff --exit-code -- pi-web-plugin.js
-
-      # The version lives in package.json and nothing else aligns it: a tag
-      # pushed against the wrong commit would otherwise release under the
-      # tag's name whatever version the tree happens to carry.
       - name: Tag matches package version
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           ver="v$(node -p "require('./package.json').version")"
           if [ "$ver" != "${{ github.ref_name }}" ]; then
-            echo "tag ${{ github.ref_name }} does not match package version tag $ver"
+            echo "tag ${{ github.ref_name }} does not match package version $ver"
             exit 1
           fi
 
-      - name: Pack
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          rm -rf pack-out && mkdir pack-out
-          npm pack --silent --pack-destination pack-out >/dev/null
-
-      # The first release of a package cannot use trusted publishing; with
-      # NPM_TOKEN present this bootstraps with the token, and once the trusted
-      # publisher is configured on npm the OIDC route takes over on its own.
+      # Skipped when the version is already on npm, so a rerun of a released tag
+      # only repairs the GitHub Release.
       - name: Publish to npm
         if: startsWith(github.ref, 'refs/tags/')
         env:
@@ -69,19 +66,26 @@ jobs:
           pkg="$(node -p "require('./package.json').name")"
           ver="$(node -p "require('./package.json').version")"
           if npm view "$pkg@$ver" version >/dev/null 2>&1; then
-            echo "$pkg@$ver is already on npm; skipping publish (rerun of a released tag)"
+            echo "$pkg@$ver is already on npm; skipping publish"
           elif [ -n "$NPM_TOKEN" ]; then
-            echo "publishing $pkg@$ver with the bootstrap token (no provenance)"
-            npm publish "./pack-out/"*.tgz --access public --tag alpha
+            echo "staging $pkg@$ver; a maintainer approves it on npmjs.com with 2FA"
+            npm stage publish --access public
           else
-            npm publish "./pack-out/"*.tgz --access public --provenance --tag alpha
+            npm publish --access public --provenance
           fi
 
-      # The release is created only after publish succeeded, so a release page
-      # never advertises a tarball the registry does not have.
-      - name: Attach tarball to GitHub Release
+      - name: Release notes
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          pkg="$(node -p "require('./package.json').name")"
+          ver="$(node -p "require('./package.json').version")"
+          awk -v heading="## $ver" '$0 == heading { found = 1; next } /^## / { found = 0 } found' CHANGELOG.md > release-notes.md
+          test -s release-notes.md
+          fence="$(printf '\140\140\140')"
+          printf '\nInstall:\n\n%ssh\npi install npm:%s\n%s\n' "$fence" "$pkg" "$fence" >> release-notes.md
+
+      - name: GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: pack-out/*.tgz
-          generate_release_notes: true
+          body_path: release-notes.md

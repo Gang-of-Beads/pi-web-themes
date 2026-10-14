@@ -1,12 +1,35 @@
 {
   "name": "@gang-of-beads/pi-web-themes",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0",
   "description": "Theme pack plugin for PI WEB: theme token packs contributed through the plugin contract.",
   "license": "MIT",
   "type": "module",
-  "files": [
-    "pi-web-plugin.js"
+  "keywords": [
+    "pi-package",
+    "pi-web",
+    "pi-web-plugin",
+    "themes"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gang-of-Beads/pi-web-themes.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gang-of-Beads/pi-web-themes/issues"
+  },
+  "homepage": "https://github.com/Gang-of-Beads/pi-web-themes#readme",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "files": [
+    "pi-web-plugin.js",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "piWeb": {
     "plugins": [
       {
@@ -19,9 +42,8 @@
   },
   "scripts": {
     "build": "node build.mjs",
-    "test": "vitest run",
-    "prepack": "node build.mjs",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "check": "npm run typecheck && npm test && npm run build && git diff --exit-code -- pi-web-plugin.js"
   },
   "devDependencies": {
@@ -30,9 +52,5 @@
     "lit": "^3.3.2",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Gang-of-Beads/pi-web-themes.git"
   }
 }
