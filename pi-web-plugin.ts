@@ -1,4 +1,5 @@
-import type { PiWebPlugin, ThemeTokens } from "@gang-of-beads/pi-web-plugin-api/plugin-api";
+import type { PiWebPlugin, QualifiedContributionId, ThemeContribution, ThemeTokens } from "@gang-of-beads/pi-web-plugin-api/plugin-api";
+import { PRO_DARK_TOKENS, PRO_LIGHT_TOKENS } from "./proThemes";
 
 const classicTokens = {
   "--pi-bg": "#0d1117",
@@ -497,6 +498,13 @@ const materialLightTokens = {
 } satisfies ThemeTokens;
 
 
+type ReplacedTheme = ThemeContribution & { replacedBy: QualifiedContributionId };
+
+const materialReplacements: ReplacedTheme[] = [
+  { id: "material-dark", name: "Material Dark", description: "M3-flavoured dark: tonal surfaces carry the layers.", order: 90, colorScheme: "dark", tokens: { ...materialShape, ...withSurfaceLadder(materialDarkTokens) }, replacedBy: "core:material-dark" },
+  { id: "material-light", name: "Material Light", description: "M3-flavoured light on the porcelain canvas.", order: 100, colorScheme: "light", tokens: { ...materialShape, ...withSurfaceLadder(materialLightTokens) }, replacedBy: "core:material-light" },
+];
+
 const themePackPlugin: PiWebPlugin = {
   apiVersion: 2,
   name: "PI WEB Themes",
@@ -567,22 +575,9 @@ const themePackPlugin: PiWebPlugin = {
           colorScheme: "light",
           tokens: withSurfaceLadder(clayPaperTokens),
         },
-        {
-          id: "material-dark",
-          name: "Material Dark",
-          description: "M3-flavoured dark: tonal surfaces carry the layers.",
-          order: 90,
-          colorScheme: "dark",
-          tokens: { ...materialShape, ...withSurfaceLadder(materialDarkTokens) },
-        },
-        {
-          id: "material-light",
-          name: "Material Light",
-          description: "M3-flavoured light on the porcelain canvas.",
-          order: 100,
-          colorScheme: "light",
-          tokens: { ...materialShape, ...withSurfaceLadder(materialLightTokens) },
-        },
+        ...materialReplacements,
+        { id: "pro-dark", name: "Pro", description: "The former native flat mono appearance.", order: 110, colorScheme: "dark", tokens: PRO_DARK_TOKENS },
+        { id: "pro-light", name: "Pro Light", description: "The former native appearance on paper.", order: 120, colorScheme: "light", tokens: PRO_LIGHT_TOKENS },
       ],
       themePairs: [
         {
@@ -609,6 +604,7 @@ const themePackPlugin: PiWebPlugin = {
           light: "material-light",
           dark: "material-dark",
         },
+        { id: "pro", name: "Pro", description: "Follow the system light/dark preference with the Pro palette.", order: 40, light: "pro-light", dark: "pro-dark" },
       ],
     },
   }),

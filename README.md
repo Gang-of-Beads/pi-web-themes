@@ -7,8 +7,11 @@ A theme pack for [PI WEB](https://github.com/Gang-of-Beads/pi-web). It adds more
 | PI WEB | PI WEB Light | PI WEB Dark |
 | Clay | Clay Paper | Clay |
 | Material | Material Light | Material Dark |
+| Pro | Pro Light | Pro |
 
 Single themes: PI WEB Classic, Night, Paper, High Contrast.
+
+Pro is the flat mono look PI WEB used to ship as its built-in appearance. On PI WEB releases whose built-in appearance is Material, the pack's Material entries give way to the built-in ones, so Material is listed once.
 
 Every theme sets the same tokens as PI WEB's own themes, so text, borders, status colours and the label colour on accent fills keep their contrast. `contrast.test.ts` checks it.
 

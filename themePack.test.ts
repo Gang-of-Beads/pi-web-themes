@@ -23,6 +23,8 @@ describe("the bundled theme pack", () => {
       { id: "clay-paper", colorScheme: "light" },
       { id: "material-dark", colorScheme: "dark" },
       { id: "material-light", colorScheme: "light" },
+      { id: "pro-dark", colorScheme: "dark" },
+      { id: "pro-light", colorScheme: "light" },
     ]);
   });
 
@@ -31,6 +33,7 @@ describe("the bundled theme pack", () => {
       { id: "pi-web", light: "pi-web-light", dark: "pi-web-dark" },
       { id: "clay", light: "clay-paper", dark: "clay-soft" },
       { id: "material", light: "material-light", dark: "material-dark" },
+      { id: "pro", light: "pro-light", dark: "pro-dark" },
     ]);
   });
 });

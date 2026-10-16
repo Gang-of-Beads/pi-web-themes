@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+- Add the Pro pair (Pro and Pro Light), the flat mono look PI WEB used to ship as its built-in appearance, with its fonts, radii and surfaces unchanged.
+- PI WEB releases that ship Material as their built-in appearance hide this pack's Material entries and move a saved Material choice to the built-in one, so Material is listed once. Older PI WEB releases ignore the new `replacedBy` field and keep using the pack's Material themes.
+
 ## 0.1.0
 
 - First release. The theme pack moves out of PI WEB's bundled plugins into this package, which PI WEB 2.202609.0 or later loads through the plugin contract; the plugin id stays `themes`.

@@ -43,6 +43,21 @@ function contrast(a: string, b: string): number {
   return (high + 0.05) / (low + 0.05);
 }
 
+/** Resolves the `var()` and sRGB `color-mix()` stops Pro derives its surface ladder from. */
+function resolvedColour(tokens: Record<string, string>, value: string | undefined): string {
+  const reference = /^var\((--pi-[a-z-]+)\)$/u.exec(value ?? "");
+  if (reference?.[1] !== undefined) return resolvedColour(tokens, tokens[reference[1]]);
+  const mix = /^color-mix\(in srgb, var\((--pi-[a-z-]+)\) (\d+)%, var\((--pi-[a-z-]+)\)\)$/u.exec(value ?? "");
+  if (mix?.[1] === undefined || mix[2] === undefined || mix[3] === undefined) return value ?? "";
+  const weight = Number(mix[2]) / 100;
+  const first = resolvedColour(tokens, tokens[mix[1]]).replace("#", "");
+  const second = resolvedColour(tokens, tokens[mix[3]]).replace("#", "");
+  return `#${[0, 2, 4].map((start) => {
+    const mixed = Math.round(Number.parseInt(first.slice(start, start + 2), 16) * weight + Number.parseInt(second.slice(start, start + 2), 16) * (1 - weight));
+    return mixed.toString(16).padStart(2, "0");
+  }).join("")}`;
+}
+
 /** Opaque six-digit values only: the overlays carry alpha and are not text. */
 function isOpaqueHex(value: string | undefined): value is string {
   return value !== undefined && /^#[0-9a-f]{6}$/iu.test(value);
@@ -101,10 +116,10 @@ describe("theme text contrast", () => {
   it("gives every theme a real surface ladder, not a flat one", () => {
     for (const theme of themes) {
       const tokens: Record<string, string> = { ...theme.tokens };
-      const canvas = luminance(tokens["--pi-surface-canvas"]);
-      const panel = luminance(tokens["--pi-surface-panel"]);
-      const card = luminance(tokens["--pi-surface-card"]);
-      const raised = luminance(tokens["--pi-surface-raised"]);
+      const canvas = luminance(resolvedColour(tokens, tokens["--pi-surface-canvas"]));
+      const panel = luminance(resolvedColour(tokens, tokens["--pi-surface-panel"]));
+      const card = luminance(resolvedColour(tokens, tokens["--pi-surface-card"]));
+      const raised = luminance(resolvedColour(tokens, tokens["--pi-surface-raised"]));
       expect(panel, `${theme.id} frames its content off the canvas`).not.toBe(canvas);
       const cardStep = card - panel;
       const raisedStep = raised - card;

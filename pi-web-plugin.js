@@ -1,3 +1,107 @@
+// proThemes.ts
+var PRO_DARK_TOKENS = {
+  "--pi-bg": "#131519",
+  "--pi-surface": "#1a1d23",
+  "--pi-surface-hover": "#23272f",
+  "--pi-terminal-bg": "#0e1013",
+  "--pi-terminal-text": "#dfe3ea",
+  "--pi-border": "#383e48",
+  "--pi-border-muted": "#262b33",
+  "--pi-text": "#d5dae2",
+  "--pi-text-secondary": "#a7aeb9",
+  "--pi-text-bright": "#eef1f5",
+  "--pi-muted": "#8b929d",
+  "--pi-dim": "#6b7280",
+  "--pi-accent": "#d9a24a",
+  "--pi-accent-border": "#8a6a2a",
+  "--pi-on-accent": "#201a0c",
+  "--pi-selection-bg": "#332c1a",
+  "--pi-success": "#56b463",
+  "--pi-success-border": "#2f6e3c",
+  "--pi-success-bg": "#12211a",
+  "--pi-success-surface": "#142a1d",
+  "--pi-success-ring": "#56b46355",
+  "--pi-warning": "#d7b256",
+  "--pi-warning-border": "#6e5a1a",
+  "--pi-warning-surface": "#242110",
+  "--pi-danger": "#e5695f",
+  "--pi-purple": "#c7a5f5",
+  "--pi-purple-border": "#9a6ff0",
+  "--pi-purple-surface": "#221636",
+  "--pi-overlay": "#000c",
+  "--pi-shadow-soft": "#0000",
+  "--pi-shadow": "#0000",
+  "--pi-shadow-strong": "#0000",
+  "--pi-bg-overlay-soft": "#131519dd",
+  "--pi-bg-overlay": "#131519e6",
+  "--pi-success-bg-overlay": "#12211aee",
+  "--pi-terminal-selection": "#4a3d1e",
+  "--pi-surface-canvas": "var(--pi-bg)",
+  "--pi-surface-panel": "var(--pi-surface)",
+  "--pi-surface-card": "color-mix(in srgb, var(--pi-surface) 92%, var(--pi-text))",
+  "--pi-surface-raised": "color-mix(in srgb, var(--pi-surface) 84%, var(--pi-text))",
+  "--pi-surface-active": "color-mix(in srgb, var(--pi-surface-hover) 82%, var(--pi-text))",
+  "--pi-font-ui": 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+  "--pi-font-display": "var(--pi-font-ui)",
+  "--pi-font-mono": 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+  "--pi-radius-xs": "0px",
+  "--pi-radius-sm": "1px",
+  "--pi-radius-md": "2px",
+  "--pi-radius-lg": "3px",
+  "--pi-radius-xl": "4px"
+};
+var PRO_LIGHT_TOKENS = {
+  "--pi-bg": "#f6f5f2",
+  "--pi-surface": "#ffffff",
+  "--pi-surface-hover": "#eceae4",
+  "--pi-terminal-bg": "#14161a",
+  "--pi-terminal-text": "#e2e5ea",
+  "--pi-border": "#aca699",
+  "--pi-border-muted": "#d2cdc3",
+  "--pi-text": "#33373d",
+  "--pi-text-secondary": "#5c626b",
+  "--pi-text-bright": "#1b1e23",
+  "--pi-muted": "#6f757e",
+  "--pi-dim": "#8f959d",
+  "--pi-accent": "#8a6510",
+  "--pi-accent-border": "#b07f1c",
+  "--pi-on-accent": "#ffffff",
+  "--pi-selection-bg": "#f2e7cd",
+  "--pi-success": "#1f7a33",
+  "--pi-success-border": "#2f8f45",
+  "--pi-success-bg": "#e9f4ea",
+  "--pi-success-surface": "#ddefe0",
+  "--pi-success-ring": "#1f7a3355",
+  "--pi-warning": "#8a6d10",
+  "--pi-warning-border": "#a3851a",
+  "--pi-warning-surface": "#f7f0da",
+  "--pi-danger": "#c93c31",
+  "--pi-purple": "#6d4fc4",
+  "--pi-purple-border": "#7d5ed6",
+  "--pi-purple-surface": "#efeafb",
+  "--pi-overlay": "#14161acc",
+  "--pi-shadow-soft": "#0000",
+  "--pi-shadow": "#0000",
+  "--pi-shadow-strong": "#0000",
+  "--pi-bg-overlay-soft": "#f6f5f2dd",
+  "--pi-bg-overlay": "#f6f5f2e6",
+  "--pi-success-bg-overlay": "#e9f4eaee",
+  "--pi-terminal-selection": "#3a404b",
+  "--pi-surface-canvas": "var(--pi-bg)",
+  "--pi-surface-panel": "var(--pi-surface)",
+  "--pi-surface-card": "color-mix(in srgb, var(--pi-surface) 92%, var(--pi-text))",
+  "--pi-surface-raised": "color-mix(in srgb, var(--pi-surface) 84%, var(--pi-text))",
+  "--pi-surface-active": "color-mix(in srgb, var(--pi-surface-hover) 82%, var(--pi-text))",
+  "--pi-font-ui": 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+  "--pi-font-display": "var(--pi-font-ui)",
+  "--pi-font-mono": 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+  "--pi-radius-xs": "0px",
+  "--pi-radius-sm": "1px",
+  "--pi-radius-md": "2px",
+  "--pi-radius-lg": "3px",
+  "--pi-radius-xl": "4px"
+};
+
 // pi-web-plugin.ts
 var classicTokens = {
   "--pi-bg": "#0d1117",
@@ -425,6 +529,10 @@ var materialLightTokens = {
   "--pi-success-bg-overlay": "#e7f4eaee",
   "--pi-terminal-selection": "#d0bcff"
 };
+var materialReplacements = [
+  { id: "material-dark", name: "Material Dark", description: "M3-flavoured dark: tonal surfaces carry the layers.", order: 90, colorScheme: "dark", tokens: { ...materialShape, ...withSurfaceLadder(materialDarkTokens) }, replacedBy: "core:material-dark" },
+  { id: "material-light", name: "Material Light", description: "M3-flavoured light on the porcelain canvas.", order: 100, colorScheme: "light", tokens: { ...materialShape, ...withSurfaceLadder(materialLightTokens) }, replacedBy: "core:material-light" }
+];
 var themePackPlugin = {
   apiVersion: 2,
   name: "PI WEB Themes",
@@ -495,22 +603,9 @@ var themePackPlugin = {
           colorScheme: "light",
           tokens: withSurfaceLadder(clayPaperTokens)
         },
-        {
-          id: "material-dark",
-          name: "Material Dark",
-          description: "M3-flavoured dark: tonal surfaces carry the layers.",
-          order: 90,
-          colorScheme: "dark",
-          tokens: { ...materialShape, ...withSurfaceLadder(materialDarkTokens) }
-        },
-        {
-          id: "material-light",
-          name: "Material Light",
-          description: "M3-flavoured light on the porcelain canvas.",
-          order: 100,
-          colorScheme: "light",
-          tokens: { ...materialShape, ...withSurfaceLadder(materialLightTokens) }
-        }
+        ...materialReplacements,
+        { id: "pro-dark", name: "Pro", description: "The former native flat mono appearance.", order: 110, colorScheme: "dark", tokens: PRO_DARK_TOKENS },
+        { id: "pro-light", name: "Pro Light", description: "The former native appearance on paper.", order: 120, colorScheme: "light", tokens: PRO_LIGHT_TOKENS }
       ],
       themePairs: [
         {
@@ -536,7 +631,8 @@ var themePackPlugin = {
           order: 30,
           light: "material-light",
           dark: "material-dark"
-        }
+        },
+        { id: "pro", name: "Pro", description: "Follow the system light/dark preference with the Pro palette.", order: 40, light: "pro-light", dark: "pro-dark" }
       ]
     }
   })

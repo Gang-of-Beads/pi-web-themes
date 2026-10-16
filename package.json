@@ -1,6 +1,6 @@
 {
   "name": "@gang-of-beads/pi-web-themes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Theme pack plugin for PI WEB: theme token packs contributed through the plugin contract.",
   "license": "MIT",
   "type": "module",
