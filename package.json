@@ -1,7 +1,7 @@
 {
   "name": "@gang-of-beads/pi-web-themes",
   "version": "0.1.1",
-  "description": "Theme pack plugin for PI WEB: theme token packs contributed through the plugin contract.",
+  "description": "More themes for PI WEB: Pro, PI WEB and Clay light/dark pairs, plus Classic, Night, Paper and High Contrast.",
   "license": "MIT",
   "type": "module",
   "keywords": [
