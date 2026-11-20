@@ -38,7 +38,7 @@ npm install
 npm run check
 ```
 
-`npm run check` type-checks, runs the theme shape and contrast tests, and bundles `pi-web-plugin.ts` (with Lit inlined) into `pi-web-plugin.js`, which the package ships. The bundle is committed so that a git install works without a build step, and the check fails when it is out of date.
+`npm run check` type-checks, runs the theme shape and contrast tests, and bundles `pi-web-plugin.ts` into `pi-web-plugin.js`, which the package ships. The bundle is committed so that a git install works without a build step, and the check fails when it is out of date.
 
 ## Releasing
 
