@@ -47,7 +47,7 @@
     "check": "npm run typecheck && npm test && npm run build && git diff --exit-code -- pi-web-plugin.js"
   },
   "devDependencies": {
-    "@gang-of-beads/pi-web-plugin-api": "^0.1.0-alpha.2",
+    "@gang-of-beads/pi-web-plugin-api": "^0.1.0-alpha.10",
     "esbuild": "^0.28.2",
     "lit": "^3.3.2",
     "typescript": "^5.9.3",
