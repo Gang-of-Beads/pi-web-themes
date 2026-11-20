@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Require plugin API alpha.10.
+- The README no longer claims the pack bundles Lit; it does not, only the tests import it.
+
 ## 0.1.1
 
 - Add the Pro pair (Pro and Pro Light), the flat mono look PI WEB used to ship as its built-in appearance, with its fonts, radii and surfaces unchanged.
